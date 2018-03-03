@@ -1,30 +1,34 @@
 import React, {Component} from 'react';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {BrowserRouter, Route} from 'react-router-dom'
 import AppBar from 'material-ui/AppBar'
 import Paper from 'material-ui/Paper'
 import TodoLists from './components/TodoLists'
+import TodoList from './components/TodoList'
 
 const paperStyles = {
     margin: 20,
-    padding: 20,
-    textAlign: 'center'
+    padding: 20
 }
 
 class App extends Component {
     render() {
         return (
             <MuiThemeProvider>
+                <BrowserRouter>
                 <div className="container">
                     <AppBar
                         style={{textAlign: 'center'}}
                         showMenuIconButton={false}
-                        title="ToDo Ur Life"
+                        title="ToDo Lists App"
                     />
                     <Paper style={paperStyles}>
-                        <TodoLists/>
+                        <Route path="/" exact={true} component={TodoLists}/>
+                        <Route path="/todo-list/:id/" component={TodoList}/>
                     </Paper>
                 </div>
+                </BrowserRouter>
             </MuiThemeProvider>
         );
     }
