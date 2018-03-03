@@ -7,23 +7,19 @@ import Paper from 'material-ui/Paper'
 import TodoLists from './components/TodoLists'
 import TodoList from './components/TodoList'
 
-const paperStyles = {
-    margin: 20,
-    padding: 20
-}
 
 class App extends Component {
     render() {
         return (
             <MuiThemeProvider>
                 <BrowserRouter>
-                <div className="container">
+                <div className="wld-container">
                     <AppBar
                         style={{textAlign: 'center'}}
                         showMenuIconButton={false}
                         title="ToDo Lists App"
                     />
-                    <Paper style={paperStyles}>
+                    <Paper className="wld-paper-pm">
                         <Route path="/" exact={true} component={TodoLists}/>
                         <Route path="/todo-list/:id/" component={TodoList}/>
                     </Paper>
