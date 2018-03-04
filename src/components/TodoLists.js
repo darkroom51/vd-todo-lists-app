@@ -31,7 +31,13 @@ class TodoLists extends Component {
     getLists = () => {
         fetch(`https://todos.venturedevs.net/api/todolists/`)
             .then(response => response.json())
-            .then(data => this.setState({todoLists: data}))
+            .then(data => this.setState({todoLists: this.sortLists(data)}))
+    }
+
+    sortLists = (arr) => {
+        return arr.sort((a,b)=>{
+            return a.id - b.id
+        })
     }
 
     addList = () => {

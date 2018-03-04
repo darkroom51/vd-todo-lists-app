@@ -39,7 +39,13 @@ class TodoList extends Component {
     getTasks = () => {
         fetch(`https://todos.venturedevs.net/api/todolists/${this.state.listId}/`)
             .then(response => response.json())
-            .then(data => this.setState({todoList: data}))
+            .then(data => this.setState({todoList: this.sortTasks(data)}))
+    }
+
+    sortTasks = (arr) => {
+        return arr.sort((a,b)=>{
+            return a.id - b.id
+        })
     }
 
     addTask = () => {
@@ -156,8 +162,6 @@ class TodoList extends Component {
 
 
     render() {
-        //console.log(this.state.todoList) //wld_CL
-
         return (
             <div>
                 <TextField
@@ -177,7 +181,8 @@ class TodoList extends Component {
                 <Card>
                     <CardHeader
                         title={
-                            this.state.filterTaskName !== '' ?
+                            this.state.filterTaskName !== '' || this.state.filterTasksSelect !== 0
+                                ?
                                 "Filter is ON"
                                 :
                                 "Filter Your Todos"
