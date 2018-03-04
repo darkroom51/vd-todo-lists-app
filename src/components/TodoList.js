@@ -167,7 +167,7 @@ class TodoList extends Component {
                     onChange={this.handleNewTaskNameInput}
                 />
                 <RaisedButton
-                    label={"add"}
+                    label={"add todo"}
                     primary={true}
                     fullWidth={true}
                     icon={<Add />}
@@ -215,7 +215,7 @@ class TodoList extends Component {
                         this.state.todoList
                         &&
                         this.state.todoList
-                            .filter((el) => el.name.indexOf(this.state.filterTaskName) !== -1)
+                            .filter((el) => el.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(this.state.filterTaskName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")) !== -1)
                             .filter((el) => (
                                 this.state.filterTasksSelect === 0 ?
                                     true

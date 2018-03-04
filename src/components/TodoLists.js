@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
+
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
-import Add from 'material-ui/svg-icons/content/add';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
-import Toggle from 'material-ui/Toggle';
+
 import TodoListsEdit from './TodoListsEdit'
 import TodoListsDelete from './TodoListsDelete'
+import TodoListsAdd from './TodoListsAdd'
+import TodoListsFilter from './TodoListsFilter'
 
 
 class TodoLists extends Component {
@@ -83,7 +82,7 @@ class TodoLists extends Component {
             .then(json => console.log(json))
             .then(() => {
                 this.getLists();
-                this.setState({editMode: -1, msg: 'List name has been updated successfully', snackbarOpen: true})
+                this.setState({msg: 'List name has been updated successfully', snackbarOpen: true})
             })
             .catch(err => console.log(err))
         console.log(listObj)
@@ -107,56 +106,20 @@ class TodoLists extends Component {
     };
 
     render() {
-        //console.log(this.state.todoLists) //wld_CL
-
         return (
             <div>
-                <TextField
-                    hintText={"New list..."}
-                    fullWidth={true}
-                    value={this.state.newListName}
-                    onChange={this.newListNameInputHandler}
-                />
-                <RaisedButton
-                    label={"create"}
-                    primary={true}
-                    fullWidth={true}
-                    icon={<Add/>}
-                    onClick={this.addList}
+
+                <TodoListsAdd
+                    state={this.state}
+                    newListNameInputHandler={this.newListNameInputHandler}
+                    addList={this.addList}
                 />
 
-                <Card>
-                    <CardHeader
-                        title={
-                            this.state.filterListName !== '' ?
-                                "Filter is ON"
-                                :
-                                "Filter Your Lists"
-                        }
-                        actAsExpander={true}
-                        showExpandableButton={true}
-                        style={{padding:10, backgroundColor:'#efefef'}}
-                    />
-                    <CardText
-                        expandable={true}
-                        style={{textAlign: 'left', paddingTop:'0px'}}
-                    >
-                        <TextField
-                            floatingLabelText="Find your List ..."
-                            fullWidth={true}
-                            value={this.state.filterListName}
-                            onChange={this.handleFilterListName}
-                        />
-                        <div style={{maxWidth: 200, paddingTop: 20}}>
-                            <Toggle
-                                label="Hide empty lists"
-                                style={{display: 'inline-block'}}
-                                toggled={this.state.emptyListToggle}
-                                onToggle={this.handleEmptyListToggle}
-                            />
-                        </div>
-                    </CardText>
-                </Card>
+                <TodoListsFilter
+                    state={this.state}
+                    handleFilterListName={this.handleFilterListName}
+                    handleEmptyListToggle={this.handleEmptyListToggle}
+                />
 
                 <List>
                     <Subheader>All Lists</Subheader>
@@ -164,7 +127,7 @@ class TodoLists extends Component {
                         this.state.todoLists
                         &&
                         this.state.todoLists
-                            .filter((el) => el.name.indexOf(this.state.filterListName) !== -1)
+                            .filter((el) => el.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(this.state.filterListName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")) !== -1)
                             .filter((el) => this.state.emptyListToggle ? el.todos_count > 0 : el)
                             .map((el) => (
                                 <div key={el.id}>
