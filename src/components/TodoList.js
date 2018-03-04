@@ -2,20 +2,17 @@ import React, {Component} from 'react';
 
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import CheckBox from 'material-ui/svg-icons/toggle/check-box';
 import CheckBoxOutlineBlank from 'material-ui/svg-icons/toggle/check-box-outline-blank';
-import BorderColor from 'material-ui/svg-icons/editor/border-color';
-import Save from 'material-ui/svg-icons/content/save';
-import Cancel from 'material-ui/svg-icons/navigation/cancel';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 
 import TodoListAdd from './TodoListAdd'
 import TodoListFilter from "./TodoListFilter";
+import TodoListEdit from "./TodoListEdit";
 
 
 class TodoList extends Component {
@@ -75,19 +72,15 @@ class TodoList extends Component {
         fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
             method: 'DELETE'
         })
-        //.then(response => console.log(response))
             .then(() => {
                 this.getTasks();
                 this.setState({msg: 'Task has been deleted successfully', snackbarOpen: true})
             })
     }
 
-    toggleDoneTask = (taskId, taskName, taskDone, todoListId) => {
+    toggleDoneTask = (taskId, taskDone) => {
         const taskObj = {
-            //id: taskId,
-            //name: taskName,
             is_complete: !taskDone
-            //todo_list: todoListId
         }
         fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
             method: 'PATCH',
@@ -103,7 +96,6 @@ class TodoList extends Component {
                 this.setState({msg: 'Task "completed/uncompleted" toggled successfully', snackbarOpen: true})
             })
             .catch(err => console.log(err))
-        console.log(taskObj)
     }
 
     editTask = (taskId, taskName) => {
@@ -112,10 +104,7 @@ class TodoList extends Component {
 
     updateTask = (taskId, taskName) => {
         const taskObj = {
-            //id: taskId,
             name: taskName
-            //is_complete: !taskDone
-            //todo_list: todoListId
         }
         fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
             method: 'PATCH',
@@ -131,34 +120,17 @@ class TodoList extends Component {
                 this.setState({editMode: -1, msg: 'Task name has been updated successfully', snackbarOpen: true})
             })
             .catch(err => console.log(err))
-        console.log(taskObj)
     }
 
     cancelEditTask = () => {
         this.setState({editMode: -1, editTaskName: ''})
     }
 
-    handleNewTaskNameInput = (event) => {
-        this.setState({newTaskName: event.target.value})
-    }
-
-    handleFilterTaskName = (event, value) => {
-        this.setState({filterTaskName: event.target.value})
-    }
-
-    handleFilterTasksSelect = (event, index, value) => {
-        this.setState({filterTasksSelect: value})
-    }
-
-    handleEditTaskName = (event, value) => {
-        this.setState({editTaskName: event.target.value})
-    }
-
-    handleSnackbarClose = () => {
-        this.setState({
-            snackbarOpen: false,
-        });
-    };
+    handleNewTaskNameInput = (event) => {this.setState({newTaskName: event.target.value})}
+    handleFilterTaskName = (event, value) => {this.setState({filterTaskName: event.target.value})}
+    handleFilterTasksSelect = (event, index, value) => {this.setState({filterTasksSelect: value})}
+    handleEditTaskName = (event, value) => {this.setState({editTaskName: event.target.value})}
+    handleSnackbarClose = () => {this.setState({snackbarOpen: false,})}
 
 
     render() {
@@ -177,74 +149,36 @@ class TodoList extends Component {
                 />
 
                 <List>
-                    <Subheader>Single List</Subheader>
+                    <Subheader>Todo List</Subheader>
                     {
                         this.state.todoList
                         &&
                         this.state.todoList
                             .filter((el) => el.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(this.state.filterTaskName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")) !== -1)
-                            .filter((el) => (
-                                this.state.filterTasksSelect === 0 ?
-                                    true
-                                    :
-                                    this.state.filterTasksSelect === 1 ?
-                                        el.is_complete === false
-                                        :
-                                        el.is_complete === true
-                            ))
+                            .filter((el) => (this.state.filterTasksSelect === 0 ? true : this.state.filterTasksSelect === 1 ? el.is_complete === false : el.is_complete === true))
                             .map((el) => (
                                 <div key={el.id}>
                                     <ListItem
-                                        primaryText=
-                                            {
-                                                this.state.editMode !== el.id ?
-                                                    <span>
-                                                        {el.name}
-                                                        <BorderColor
-                                                            style={{display: 'inline-block', color: '#aaa', height: 15, paddingLeft:15}}
-                                                            onClick={() => {this.editTask(el.id, el.name)}}
-                                                        />
-                                                    </span>
-                                                    :
-                                                    <span>
-                                                    <TextField
-                                                        name={"el.id"}
-                                                        fullWidth={true}
-                                                        value={this.state.editTaskName}
-                                                        onChange={this.handleEditTaskName}
-                                                    />
-                                                    <RaisedButton
-                                                        label={"save"}
-                                                        fullWidth={true}
-                                                        primary={true}
-                                                        icon={<Save />}
-                                                        onClick={() => {this.updateTask(el.id, this.state.editTaskName)}}
-                                                    />
-                                                    <RaisedButton
-                                                        label={"cancel"}
-                                                        fullWidth={true}
-                                                        secondary={true}
-                                                        icon={<Cancel />}
-                                                        onClick={this.cancelEditTask}
-                                                    />
-                                                    </span>
-                                            }
-
-                                        rightIcon={<ActionDelete onClick={() => this.deleteTask(el.id)}/>}
+                                        primaryText={
+                                            <TodoListEdit
+                                                state={this.state}
+                                                el={el}
+                                                editTask={this.editTask}
+                                                handleEditTaskName={this.handleEditTaskName}
+                                                updateTask={this.updateTask}
+                                                cancelEditTask={this.cancelEditTask}
+                                            />
+                                        }
+                                        rightIcon={
+                                            <ActionDelete onClick={() => this.deleteTask(el.id)}/>
+                                        }
                                         leftIcon={
                                             el.is_complete === false ?
-                                                <CheckBoxOutlineBlank
-                                                    onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
+                                                <CheckBoxOutlineBlank onClick={() => this.toggleDoneTask(el.id, el.is_complete)}/>
                                                 :
-                                                <CheckBox
-                                                    onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
+                                                <CheckBox onClick={() => this.toggleDoneTask(el.id, el.is_complete)}/>
                                         }
-                                        style={
-                                            el.is_complete === false ?
-                                                {textDecoration: 'none'}
-                                                :
-                                                {textDecoration: 'line-through', color: '#999'}
-                                        }
+                                        style={el.is_complete === false ? {textDecoration: 'none'} : {textDecoration: 'line-through', color: '#999'}}
                                         disabled={true}
                                     />
                                     <Divider/>

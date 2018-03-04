@@ -27,7 +27,6 @@ class TodoLists extends Component {
         this.getLists()
     }
 
-
     getLists = () => {
         fetch(`https://todos.venturedevs.net/api/todolists/`)
             .then(response => response.json())
@@ -65,12 +64,10 @@ class TodoLists extends Component {
         fetch(`https://todos.venturedevs.net/api/todolists/${listId}/`, {
             method: 'DELETE'
         })
-            //.then(response => console.log(response))
             .then(() => {
                 this.getLists();
                 this.setState({msg: 'List has been deleted successfully', snackbarOpen: true})
             })
-        console.log(listId)
     }
 
     updateList = (listId, listName) => {
@@ -91,9 +88,7 @@ class TodoLists extends Component {
                 this.setState({msg: 'List name has been updated successfully', snackbarOpen: true})
             })
             .catch(err => console.log(err))
-        console.log(listObj)
     }
-
 
     handleNewListName = (event) => {this.setState({newListName: event.target.value})}
     handleFilterListName = (event, value) => {this.setState({filterListName: event.target.value})}
