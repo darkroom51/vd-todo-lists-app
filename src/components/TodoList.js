@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import TextField from 'material-ui/TextField'
@@ -8,6 +8,9 @@ import CheckBox from 'material-ui/svg-icons/toggle/check-box';
 import CheckBoxOutlineBlank from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import BorderColor from 'material-ui/svg-icons/editor/border-color';
 import Save from 'material-ui/svg-icons/content/save';
+import Cancel from 'material-ui/svg-icons/navigation/cancel';
+import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
+import Add from 'material-ui/svg-icons/content/add';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
@@ -15,11 +18,8 @@ import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 
 
-
-
-
 class TodoList extends Component {
-    state={
+    state = {
         todoList: null,
         listId: this.props.match.params.id,
 
@@ -32,7 +32,7 @@ class TodoList extends Component {
         msg: ''
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getTasks();
     }
 
@@ -58,7 +58,10 @@ class TodoList extends Component {
             })
                 .then(response => response.json())
                 .then(json => console.log(json))
-                .then(() => {this.getTasks(); this.setState({newTaskName: '', msg: 'Task has been added successfully', snackbarOpen: true})})
+                .then(() => {
+                    this.getTasks();
+                    this.setState({newTaskName: '', msg: 'Task has been added successfully', snackbarOpen: true})
+                })
         }
     }
 
@@ -66,8 +69,11 @@ class TodoList extends Component {
         fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
             method: 'DELETE'
         })
-            //.then(response => console.log(response))
-            .then(() => {this.getTasks(); this.setState({msg: 'Task has been deleted successfully', snackbarOpen: true})})
+        //.then(response => console.log(response))
+            .then(() => {
+                this.getTasks();
+                this.setState({msg: 'Task has been deleted successfully', snackbarOpen: true})
+            })
     }
 
     toggleDoneTask = (taskId, taskName, taskDone, todoListId) => {
@@ -86,14 +92,16 @@ class TodoList extends Component {
         })
             .then(response => response.json())
             .then(json => console.log(json))
-            .then(() => {this.getTasks(); this.setState({msg: 'Task has been toggled successfully', snackbarOpen: true})})
+            .then(() => {
+                this.getTasks();
+                this.setState({msg: 'Task has been toggled successfully', snackbarOpen: true})
+            })
             .catch(err => console.log(err))
         console.log(taskObj)
     }
 
     editTask = (taskId, taskName) => {
-        this.setState({ editMode: taskId, editTaskName: taskName })
-        console.log(this.state.editTaskName)
+        this.setState({editMode: taskId, editTaskName: taskName})
     }
 
     updateTask = (taskId, taskName) => {
@@ -112,9 +120,16 @@ class TodoList extends Component {
         })
             .then(response => response.json())
             .then(json => console.log(json))
-            .then(() => {this.getTasks(); this.setState({editMode: -1, msg: 'Task name has been updated successfully', snackbarOpen: true})})
+            .then(() => {
+                this.getTasks();
+                this.setState({editMode: -1, msg: 'Task name has been updated successfully', snackbarOpen: true})
+            })
             .catch(err => console.log(err))
         console.log(taskObj)
+    }
+
+    cancelEditTask = () => {
+        this.setState({editMode: -1, editTaskName: ''})
     }
 
     handleNewTaskNameInput = (event) => {
@@ -155,17 +170,26 @@ class TodoList extends Component {
                     label={"add"}
                     primary={true}
                     fullWidth={true}
+                    icon={<Add />}
                     onClick={this.addTask}
                 />
 
                 <Card>
                     <CardHeader
-                        title="Filter your Todos"
+                        title={
+                            this.state.filterTaskName !== '' ?
+                                "Filter is ON"
+                                :
+                                "Filter Your Todos"
+                        }
                         actAsExpander={true}
                         showExpandableButton={true}
+                        style={{padding:10, backgroundColor:'#efefef'}}
                     />
-                    <CardText expandable={true} style={{textAlign: 'left'}}>
-                        <Divider inset={true} />
+                    <CardText
+                        expandable={true}
+                        style={{textAlign: 'left', paddingTop:'0px'}}
+                    >
                         <TextField
                             floatingLabelText="Find your Todo ..."
                             fullWidth={true}
@@ -201,41 +225,61 @@ class TodoList extends Component {
                                         :
                                         el.is_complete === true
                             ))
-                            .map((el)=>(
+                            .map((el) => (
                                 <div key={el.id}>
-                                <ListItem
-                                    primaryText=
-                                        {
-                                            this.state.editMode !== el.id ?
-                                        <span>{el.name} <BorderColor style={{display:'inline-block',color:'#888', height:14}} onClick={()=>{this.editTask(el.id, el.name)}}/></span>
-                                        :
-                                                <span>
+                                    <ListItem
+                                        primaryText=
+                                            {
+                                                this.state.editMode !== el.id ?
+                                                    <span>
+                                                        {el.name}
+                                                        <BorderColor
+                                                            style={{display: 'inline-block', color: '#aaa', height: 15, paddingLeft:15}}
+                                                            onClick={() => {this.editTask(el.id, el.name)}}
+                                                        />
+                                                    </span>
+                                                    :
+                                                    <span>
                                                     <TextField
                                                         name={"el.id"}
-                                                        fullWidth={false}
+                                                        fullWidth={true}
                                                         value={this.state.editTaskName}
                                                         onChange={this.handleEditTaskName}
                                                     />
-                                                    <Save style={{display:'inline-block',color:'#888', height:14}} onClick={()=>{this.updateTask(el.id, this.state.editTaskName)}}/>
-                                                </span>
-                                        }
+                                                    <RaisedButton
+                                                        label={"save"}
+                                                        fullWidth={true}
+                                                        primary={true}
+                                                        icon={<Save />}
+                                                        onClick={() => {this.updateTask(el.id, this.state.editTaskName)}}
+                                                    />
+                                                    <RaisedButton
+                                                        label={"cancel"}
+                                                        fullWidth={true}
+                                                        secondary={true}
+                                                        icon={<Cancel />}
+                                                        onClick={this.cancelEditTask}
+                                                    />
+                                                    </span>
+                                            }
 
-                                    rightIcon={<ActionDelete onClick={() => this.deleteTask(el.id)}/>}
-                                    leftIcon={
-                                        el.is_complete === false ?
-                                            <CheckBoxOutlineBlank onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
-                                            :
-                                            <CheckBox onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
-                                    }
-                                    style={
-                                        el.is_complete === false ?
-                                            {textDecoration: 'none'}
-                                            :
-                                            {textDecoration: 'line-through', color: '#999'}
-                                    }
-                                    //onClick={()=>{this.editTask(el.id)}}
-                                />
-                                <Divider/>
+                                        rightIcon={<ActionDelete onClick={() => this.deleteTask(el.id)}/>}
+                                        leftIcon={
+                                            el.is_complete === false ?
+                                                <CheckBoxOutlineBlank
+                                                    onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
+                                                :
+                                                <CheckBox
+                                                    onClick={() => this.toggleDoneTask(el.id, el.name, el.is_complete, this.state.listId)}/>
+                                        }
+                                        style={
+                                            el.is_complete === false ?
+                                                {textDecoration: 'none'}
+                                                :
+                                                {textDecoration: 'line-through', color: '#999'}
+                                        }
+                                    />
+                                    <Divider/>
                                 </div>
                             ))
                     }
@@ -245,6 +289,7 @@ class TodoList extends Component {
                     label={"back to lists"}
                     default={true}
                     fullWidth={true}
+                    icon={<ArrowBack />}
                     onClick={this.props.history.goBack}
                 />
                 <Snackbar

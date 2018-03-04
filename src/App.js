@@ -17,7 +17,7 @@ class App extends Component {
                     <AppBar
                         style={{textAlign: 'center'}}
                         showMenuIconButton={false}
-                        title="ToDo Lists App"
+                        title="VentureToDo"
                     />
                     <Paper className="wld-paper-pm">
                         <Route path="/" exact={true} component={TodoLists}/>
