@@ -3,15 +3,14 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import ActionDelete from 'material-ui/svg-icons/action/delete';
 import Add from 'material-ui/svg-icons/content/add';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
-import Save from 'material-ui/svg-icons/content/save';
-import Cancel from 'material-ui/svg-icons/navigation/cancel';
+import Toggle from 'material-ui/Toggle';
 import TodoListsEdit from './TodoListsEdit'
+import TodoListsDelete from './TodoListsDelete'
 
 
 class TodoLists extends Component {
@@ -20,8 +19,7 @@ class TodoLists extends Component {
 
         newListName: '',
         filterListName: '',
-        editMode: -1,
-        editListName: '',
+        emptyListToggle: false,
         snackbarOpen: false,
         msg: ''
     }
@@ -69,33 +67,27 @@ class TodoLists extends Component {
         console.log(listId)
     }
 
-    // editList = (taskId, taskName) => {
-    //     this.setState({editMode: taskId, editListName: taskName})
-    // }
 
-    // updateList = (taskId, taskName) => {
-    //     const taskObj = {
-    //         //id: taskId,
-    //         name: taskName
-    //         //is_complete: !taskDone
-    //         //todo_list: todoListId
-    //     }
-    //     fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
-    //         method: 'PATCH',
-    //         body: JSON.stringify(taskObj),
-    //         headers: {
-    //             "Content-type": "application/json; charset=UTF-8"
-    //         }
-    //     })
-    //         .then(response => response.json())
-    //         .then(json => console.log(json))
-    //         .then(() => {
-    //             this.getTasks();
-    //             this.setState({editMode: -1, msg: 'Task name has been updated successfully', snackbarOpen: true})
-    //         })
-    //         .catch(err => console.log(err))
-    //     console.log(taskObj)
-    // }
+    updateList = (listId, listName) => {
+        const listObj = {
+            name: listName
+        }
+        fetch(`https://todos.venturedevs.net/api/todolists/${listId}/`, {
+            method: 'PATCH',
+            body: JSON.stringify(listObj),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => response.json())
+            .then(json => console.log(json))
+            .then(() => {
+                this.getLists();
+                this.setState({editMode: -1, msg: 'List name has been updated successfully', snackbarOpen: true})
+            })
+            .catch(err => console.log(err))
+        console.log(listObj)
+    }
 
 
     newListNameInputHandler = (event) => {
@@ -105,6 +97,8 @@ class TodoLists extends Component {
     handleFilterListName = (event, value) => {
         this.setState({filterListName: event.target.value})
     }
+
+    handleEmptyListToggle = (event, toggle) => this.setState({emptyListToggle: toggle})
 
     handleSnackbarClose = () => {
         this.setState({
@@ -153,53 +147,34 @@ class TodoLists extends Component {
                             value={this.state.filterListName}
                             onChange={this.handleFilterListName}
                         />
+                        <div style={{maxWidth: 200, paddingTop: 20}}>
+                            <Toggle
+                                label="Hide empty lists"
+                                style={{display: 'inline-block'}}
+                                toggled={this.state.emptyListToggle}
+                                onToggle={this.handleEmptyListToggle}
+                            />
+                        </div>
                     </CardText>
                 </Card>
 
                 <List>
-                    <Subheader>My All Lists</Subheader>
+                    <Subheader>All Lists</Subheader>
                     {
                         this.state.todoLists
                         &&
                         this.state.todoLists
                             .filter((el) => el.name.indexOf(this.state.filterListName) !== -1)
+                            .filter((el) => this.state.emptyListToggle ? el.todos_count > 0 : el)
                             .map((el) => (
                                 <div key={el.id}>
                                     <ListItem
-                                        primaryText=
-                                            {
-                                                this.state.editMode !== el.id ?
-                                                    <span>
-                                                        {el.name}
-                                                    </span>
-                                                    :
-                                                    <span>
-
-                                                    <RaisedButton
-                                                        label={"save"}
-                                                        fullWidth={true}
-                                                        primary={true}
-                                                        icon={<Save />}
-                                                        onClick={() => {this.updateList(el.id, this.state.editListName)}}
-                                                    />
-                                                    <RaisedButton
-                                                        label={"cancel"}
-                                                        fullWidth={true}
-                                                        secondary={true}
-                                                        icon={<Cancel />}
-                                                        onClick={this.cancelEditList}
-                                                    />
-                                                    </span>
-                                            }
+                                        primaryText={el.name}
                                         secondaryText={`Todos in list: ${el.todos_count}`}
                                         rightIconButton={
                                             <IconButton>
-                                                <TodoListsEdit id={el.id} name={el.name}/>
-                                                    <div
-                                                        onClick={() => this.deleteList(el.id)}
-                                                    >
-                                                    <ActionDelete color={"#777"} />
-                                                    </div>
+                                                <TodoListsEdit id={el.id} name={el.name} click={this.updateList}/>
+                                                <TodoListsDelete id={el.id} click={this.deleteList}/>
                                             </IconButton>}
                                         onClick={() => {
                                             this.props.history.push(`/todo-list/${el.id}`)

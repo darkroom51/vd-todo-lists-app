@@ -1,24 +1,23 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import BorderColor from 'material-ui/svg-icons/editor/border-color';
-import TextField from 'material-ui/TextField'
+import ActionDelete from 'material-ui/svg-icons/action/delete';
+
 
 const styles = {
-    editBtn: {
+    deleteBtn: {
         display: "block",
         position: "absolute",
-        right: 34,
-        top: 14,
+        right: 0,
+        top: 12,
         height: 24,
         width: 24
     }
 }
 
-class TodoListsEdit extends React.Component {
-    state = {
-        editListName: this.props.name,
 
+class TodoListsDelete extends React.Component {
+    state = {
         open: false
     };
 
@@ -30,17 +29,10 @@ class TodoListsEdit extends React.Component {
         this.setState({open: false});
     };
 
-    handleSubmit = (listId, listName) => {
-        if (this.props.listName!=='') {
-            this.props.click(listId, listName);
+    handleSubmit = (listId) => {
+            this.props.click(listId);
             this.handleClose();
-        }
     }
-
-    handleEditListName = (event, value) => {
-        this.setState({editListName: event.target.value})
-    }
-
 
 
     render() {
@@ -51,10 +43,10 @@ class TodoListsEdit extends React.Component {
                 onClick={this.handleClose}
             />,
             <FlatButton
-                label="Update"
+                label="Delete"
                 primary={true}
                 keyboardFocused={true}
-                onClick={() => this.handleSubmit(this.props.id, this.state.editListName)}
+                onClick={() => this.handleSubmit(this.props.id)}
             />,
         ];
 
@@ -62,25 +54,26 @@ class TodoListsEdit extends React.Component {
         return (
             <div>
                 <div
-                    style={styles.editBtn}
+                    style={styles.deleteBtn}
                     onClick={this.handleOpen}>
-                    <BorderColor color={"#777"} style={{height:20}} />
+                    <ActionDelete color={"#777"}/>
                 </div>
 
                 <Dialog
-                    title="Edit List Name"
+                    title="Delete List"
                     actions={actions}
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                 >
-                    <TextField
-                        name={"this.props.id"}
-                        fullWidth={true}
-                        value={this.state.editListName}
-                        onChange={this.handleEditListName}
-                    />
+                    <div>
+                        <p>
+                            This list and all its todos will be <span style={{color:'red',fontWeight:'bold'}}>permanently deleted</span>.<br />
+                            This action can not be undone.
+                        </p>
+                        <p>Do you want to continue?</p>
+                    </div>
                 </Dialog>
             </div>
         );
@@ -88,4 +81,4 @@ class TodoListsEdit extends React.Component {
 }
 
 
-export default TodoListsEdit
+export default TodoListsDelete

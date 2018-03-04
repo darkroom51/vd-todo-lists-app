@@ -94,7 +94,7 @@ class TodoList extends Component {
             .then(json => console.log(json))
             .then(() => {
                 this.getTasks();
-                this.setState({msg: 'Task has been toggled successfully', snackbarOpen: true})
+                this.setState({msg: 'Task "completed/uncompleted" toggled successfully', snackbarOpen: true})
             })
             .catch(err => console.log(err))
         console.log(taskObj)
@@ -278,6 +278,7 @@ class TodoList extends Component {
                                                 :
                                                 {textDecoration: 'line-through', color: '#999'}
                                         }
+                                        disabled={true}
                                     />
                                     <Divider/>
                                 </div>
