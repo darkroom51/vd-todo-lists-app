@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import './App.css';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {BrowserRouter, Route} from 'react-router-dom'
 import AppBar from 'material-ui/AppBar'
 import Paper from 'material-ui/Paper'
+
 import TodoLists from './components/TodoLists'
 import TodoList from './components/TodoList'
+import {langTitle} from './config'
 
 
 class App extends Component {
@@ -17,7 +20,7 @@ class App extends Component {
                     <AppBar
                         style={{textAlign: 'center'}}
                         showMenuIconButton={false}
-                        title="VentureToDo"
+                        title={langTitle}
                     />
                     <Paper className="wld-paper-pm">
                         <Route path="/" exact={true} component={TodoLists}/>

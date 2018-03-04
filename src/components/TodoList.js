@@ -10,6 +10,7 @@ import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 
+import {urlTodoLists, urlTodos} from '../config';
 import TodoListAdd from './TodoListAdd'
 import TodoListFilter from "./TodoListFilter";
 import TodoListEdit from "./TodoListEdit";
@@ -34,7 +35,7 @@ class TodoList extends Component {
     }
 
     getTasks = () => {
-        fetch(`https://todos.venturedevs.net/api/todolists/${this.state.listId}/`)
+        fetch(`${urlTodoLists}${this.state.listId}/`)
             .then(response => response.json())
             .then(data => this.setState({todoList: this.sortTasks(data)}))
     }
@@ -52,7 +53,7 @@ class TodoList extends Component {
                 is_complete: false,
                 todo_list: this.state.listId
             }
-            fetch(`https://todos.venturedevs.net/api/todos/`, {
+            fetch(`${urlTodos}`, {
                 method: 'POST',
                 body: JSON.stringify(taskObj),
                 headers: {
@@ -69,7 +70,7 @@ class TodoList extends Component {
     }
 
     deleteTask = (taskId) => {
-        fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
+        fetch(`${urlTodos}${taskId}/`, {
             method: 'DELETE'
         })
             .then(() => {
@@ -82,7 +83,7 @@ class TodoList extends Component {
         const taskObj = {
             is_complete: !taskDone
         }
-        fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
+        fetch(`${urlTodos}${taskId}/`, {
             method: 'PATCH',
             body: JSON.stringify(taskObj),
             headers: {
@@ -106,7 +107,7 @@ class TodoList extends Component {
         const taskObj = {
             name: taskName
         }
-        fetch(`https://todos.venturedevs.net/api/todos/${taskId}/`, {
+        fetch(`${urlTodos}${taskId}/`, {
             method: 'PATCH',
             body: JSON.stringify(taskObj),
             headers: {

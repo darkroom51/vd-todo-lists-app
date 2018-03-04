@@ -6,6 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 
+import {urlTodoLists} from '../config';
 import TodoListsEdit from './TodoListsEdit'
 import TodoListsDelete from './TodoListsDelete'
 import TodoListsAdd from './TodoListsAdd'
@@ -28,7 +29,7 @@ class TodoLists extends Component {
     }
 
     getLists = () => {
-        fetch(`https://todos.venturedevs.net/api/todolists/`)
+        fetch(`${urlTodoLists}`)
             .then(response => response.json())
             .then(data => this.setState({todoLists: this.sortLists(data)}))
     }
@@ -44,7 +45,7 @@ class TodoLists extends Component {
             const listObj = {
                 name: this.state.newListName
             }
-            fetch(`https://todos.venturedevs.net/api/todolists/`, {
+            fetch(`${urlTodoLists}`, {
                 method: 'POST',
                 body: JSON.stringify(listObj),
                 headers: {
@@ -61,7 +62,7 @@ class TodoLists extends Component {
     }
 
     deleteList = (listId) => {
-        fetch(`https://todos.venturedevs.net/api/todolists/${listId}/`, {
+        fetch(`${urlTodoLists}${listId}/`, {
             method: 'DELETE'
         })
             .then(() => {
@@ -74,7 +75,7 @@ class TodoLists extends Component {
         const listObj = {
             name: listName
         }
-        fetch(`https://todos.venturedevs.net/api/todolists/${listId}/`, {
+        fetch(`${urlTodoLists}${listId}/`, {
             method: 'PATCH',
             body: JSON.stringify(listObj),
             headers: {
