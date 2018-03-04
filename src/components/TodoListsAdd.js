@@ -13,7 +13,7 @@ class TodoListsAdd extends Component {
                     hintText={"New List..."}
                     fullWidth={true}
                     value={this.props.state.newListName}
-                    onChange={this.props.newListNameInputHandler}
+                    onChange={this.props.handleNewListName}
                 />
                 <RaisedButton
                     label={"create list"}

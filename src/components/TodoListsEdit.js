@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {Component}  from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import BorderColor from 'material-ui/svg-icons/editor/border-color';
 import TextField from 'material-ui/TextField'
+
 
 const styles = {
     editBtn: {
@@ -15,7 +16,8 @@ const styles = {
     }
 }
 
-class TodoListsEdit extends React.Component {
+
+class TodoListsEdit extends Component {
     state = {
         editListName: this.props.name,
 
@@ -42,13 +44,12 @@ class TodoListsEdit extends React.Component {
     }
 
 
-
     render() {
         const actions = [
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onClick={this.handleClose}
+                onClick={this.handleClose} //TODO - clear state on cancel
             />,
             <FlatButton
                 label="Update"

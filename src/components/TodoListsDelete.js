@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component}  from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -16,7 +16,7 @@ const styles = {
 }
 
 
-class TodoListsDelete extends React.Component {
+class TodoListsDelete extends Component {
     state = {
         open: false
     };

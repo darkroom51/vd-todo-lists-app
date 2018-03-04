@@ -27,6 +27,7 @@ class TodoLists extends Component {
         this.getLists()
     }
 
+
     getLists = () => {
         fetch(`https://todos.venturedevs.net/api/todolists/`)
             .then(response => response.json())
@@ -66,7 +67,6 @@ class TodoLists extends Component {
         console.log(listId)
     }
 
-
     updateList = (listId, listName) => {
         const listObj = {
             name: listName
@@ -89,38 +89,25 @@ class TodoLists extends Component {
     }
 
 
-    newListNameInputHandler = (event) => {
-        this.setState({newListName: event.target.value})
-    }
+    handleNewListName = (event) => {this.setState({newListName: event.target.value})}
+    handleFilterListName = (event, value) => {this.setState({filterListName: event.target.value})}
+    handleEmptyListToggle = (event, toggle) => {this.setState({emptyListToggle: toggle})}
+    handleSnackbarClose = () => {this.setState({snackbarOpen: false,})}
 
-    handleFilterListName = (event, value) => {
-        this.setState({filterListName: event.target.value})
-    }
-
-    handleEmptyListToggle = (event, toggle) => this.setState({emptyListToggle: toggle})
-
-    handleSnackbarClose = () => {
-        this.setState({
-            snackbarOpen: false,
-        });
-    };
 
     render() {
         return (
             <div>
-
                 <TodoListsAdd
                     state={this.state}
-                    newListNameInputHandler={this.newListNameInputHandler}
+                    handleNewListName={this.handleNewListName}
                     addList={this.addList}
                 />
-
                 <TodoListsFilter
                     state={this.state}
                     handleFilterListName={this.handleFilterListName}
                     handleEmptyListToggle={this.handleEmptyListToggle}
                 />
-
                 <List>
                     <Subheader>All Lists</Subheader>
                     {
