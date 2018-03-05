@@ -10,7 +10,7 @@ import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 
-import {urlTodoLists, urlTodos} from '../config';
+import {urlTodoLists, urlTodos} from '../../config';
 import TodoListAdd from './TodoListAdd'
 import TodoListFilter from "./TodoListFilter";
 import TodoListEdit from "./TodoListEdit";

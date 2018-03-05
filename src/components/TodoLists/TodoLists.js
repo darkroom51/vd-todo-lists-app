@@ -6,7 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 
-import {urlTodoLists} from '../config';
+import {urlTodoLists} from '../../config';
 import TodoListsEdit from './TodoListsEdit'
 import TodoListsDelete from './TodoListsDelete'
 import TodoListsAdd from './TodoListsAdd'
