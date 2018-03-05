@@ -7,9 +7,9 @@ App should work on any latest browsers, preferably Chrome.
 
 ## Installation
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-You'd need node.js to run this project.
+You need to install node.js to run this project. If you have node.js, please follow below instruction.
 
-Download repository and install dependencies:
+Download or clone repository and install dependencies:
 
 ```
 $ npm install
